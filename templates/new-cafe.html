@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert New Cafe</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    {% include 'header.html' %}
+    <header>
+        <h1>Insert New Cafe</h1>
+    </header>
+    <main>
+        <form action="/insert-new-cafe" method="POST">
+            {{ form.csrf_token }}
+            <ul>
+                <li>
+                    <p class="label">{{form.cafe_name.label}}</p> <p class="'field">{{form.cafe_name}}</p>
+                </li>
+                <li>
+                    <p class="label">{{form.opening_time.label}}}</p> <p class="'field">{{form.opening_time}}</p>
+                </li>
+                <li>
+                    <p class="label">{{form.closing_time.label}}</p> <p class="'field">{{form.closing_time}}</p>
+                </li>
+                <li>
+                    <p class="label">{{form.coffee_rating.label}}</p> <p class="'field">{{form.coffee_rating}}</p>
+                </li>
+                <li>
+                    <p class="label">{{form.wifi_rating.label}}</p> <p class="'field">{{form.wifi_rating}}</p>
+                </li>
+                <li>
+                    <p class="label">{{form.location.label}}</p> <p class="'field">{{form.location}}</p>
+                </li>
+            </ul>
+            {{form.submit}}
+        </form>
+    </main>
+</body>
+</html>

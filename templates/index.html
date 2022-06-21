@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cifi</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    {% include 'header.html' %}
+    <header>
+        <h1>Welcome to Cifi</h1>
+        <hr>
+        <p>Your goto website whenever you want to find a nice cafe near you. Don't just believe what others say, upload your own preferences for others to see.</p>
+    </header>
+    <main>
+        {% if leng != 0 %}
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Opening Time</th>
+                    <th>Closing Time</th>
+                    <th>Coffee Rating</th>
+                    <th>Wifi Rating</th>
+                    <th>Location</th>
+                </tr>
+                {% for cafe in cafes: %}
+                    <tr>
+                        <td> {{cafe.cafe_name}} </td>
+                        <td> {{cafe.opening_time}} </td>
+                        <td> {{cafe.closing_time}} </td>
+                        <td> {{cafe.coffee_rating}} </td>
+                        <td> {{cafe.wifi_rating}} </td>
+                        <td> <a href="{{cafe.location}}">Location</a> </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <h2 class="nothing">No Data Entered Yet</h2>
+        {% endif %}
+    </main>
+
+</body>
+</html>
