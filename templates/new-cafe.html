@@ -9,11 +9,16 @@
     {% include 'header.html' %}
     <header>
         <h1>Insert New Cafe</h1>
+        <hr>
+        <p>You can add a new Cafe into this site only if you have the secret key. The presence of secret key signifies that you were trusted by owner of this site to maintain its records.</p>
     </header>
     <main>
         <form action="/insert-new-cafe" method="POST">
             {{ form.csrf_token }}
             <ul>
+                <li>
+                    <p class="label">{{form.secret_key.label}}</p> <p class="'field">{{form.secret_key}}</p>
+                </li>
                 <li>
                     <p class="label">{{form.cafe_name.label}}</p> <p class="'field">{{form.cafe_name}}</p>
                 </li>
@@ -28,6 +33,9 @@
                 </li>
                 <li>
                     <p class="label">{{form.wifi_rating.label}}</p> <p class="'field">{{form.wifi_rating}}</p>
+                </li>
+                <li>
+                    <p class="label">{{form.toilet_rating.label}}</p> <p class="'field">{{form.toilet_rating}}</p>
                 </li>
                 <li>
                     <p class="label">{{form.location.label}}</p> <p class="'field">{{form.location}}</p>

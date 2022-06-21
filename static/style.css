@@ -49,9 +49,14 @@ header > p{
 }
 
 main{
-    max-width: 90%;
+    max-width: 98%;
     margin: auto;
     border: 2px solid black;
+}
+
+.narrow-main{
+    max-width: 50%;
+    margin: auto;
 }
 
 main > form{
@@ -114,4 +119,28 @@ th{
 }
 .nothing{
     text-align: center;
+}
+
+.del-form{
+    padding: 0%;
+    margin: 0%;
+    border-top: 1px solid gray;
+}
+
+div.cafe-property{
+    padding: 1.1%;
+}
+
+div.cafe-property>p{
+    display: inline-block;
+    margin: 0%;
+}
+div > .prop-name{
+    width: 48%;
+    padding: 2px;
+}
+div > .prop-val{
+    width: 48%;
+    padding: 2px;
+    text-align: right;
 }

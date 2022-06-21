@@ -21,15 +21,17 @@
                     <th>Closing Time</th>
                     <th>Coffee Rating</th>
                     <th>Wifi Rating</th>
+                    <th>Toilet Rating</th>
                     <th>Location</th>
                 </tr>
                 {% for cafe in cafes: %}
                     <tr>
-                        <td> {{cafe.cafe_name}} </td>
+                        <td> <a href="/cafe/{{cafe.id}}">{{cafe.cafe_name}}</a> </td>
                         <td> {{cafe.opening_time}} </td>
                         <td> {{cafe.closing_time}} </td>
                         <td> {{cafe.coffee_rating}} </td>
                         <td> {{cafe.wifi_rating}} </td>
+                        <td> {{cafe.toilet_rating}} </td>
                         <td> <a href="{{cafe.location}}">Location</a> </td>
                     </tr>
                 {% endfor %}
