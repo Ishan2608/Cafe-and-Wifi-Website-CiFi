@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ cafe.cafe_name }}</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+</head>
+<body>
+    {% include 'nav.html' %}
+
+    <header>
+        <h1>{{cafe.cafe_name}}</h1>
+        <p>You can delete Cafe from this site only if you have the secret key. The presence of secret key signifies that you were trusted by owner of this site to maintain its records.</p>
+    </header>
+
+    <main class="narrow-main">
+        <div class="cafe-property">
+            <p class="prop-name">Opening Time</p>
+            <p class="prop-val">{{cafe.opening_time}}</p>
+        </div>
+        <div class="cafe-property">
+            <p class="prop-name">Closing Time</p>
+            <p class="prop-val">{{cafe.closing_time}}</p>
+        </div>
+        <div class="cafe-property">
+            <p class="prop-name">Coffee Rating</p>
+            <p class="prop-val">{{cafe.coffee_rating}}</p>
+        </div>
+        <div class="cafe-property">
+            <p class="prop-name">Wifi Rating</p>
+            <p class="prop-val">{{cafe.wifi_rating}}</p>
+        </div>
+        <div class="cafe-property">
+            <p class="prop-name">Toilet Rating</p>
+            <p class="prop-val">{{cafe.toilet_rating}}</p>
+        </div>
+        <div class="cafe-property">
+            <p class="prop-name">Location</p>
+            <p class="prop-val"> <a href="{{cafe.location}}" >View</a> </p>
+        </div>
+
+        <form action="/delete/{{cafe.id}}" method="POST" class="del-form">
+            <div class="cafe-property">
+                Secret Key:
+                <input type="password" name="secret_key" id="secret_key">
+                <input type="submit" value="Delete">
+            </div>
+        </form>
+    </main>
+
+</body>
+</html>
