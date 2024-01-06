@@ -34,12 +34,13 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100))
     password = db.Column(db.String(100))
+    status = db.Column(db.String(12))
 
 
 db.create_all()
 
-# Create the admin
-admin = User(email="ishanrastogi26@gmail.com", password="i9s19h8a1n14")
+# Create the first admin
+admin = User(email="ishanrastogi26@gmail.com", password="i9s19h8a1n14", status="super-admin")
 db.session.add(admin)
 db.session.commit()
 
@@ -52,8 +53,7 @@ class CifiForm(FlaskForm):
     wifi_rating = SelectField('Wifi Rating', choices=rating_options, validators=[DataRequired()])
     toilet_rating = SelectField('Toilet Rating', choices=rating_options, validators=[DataRequired()])
     location = StringField('Location', validators=[DataRequired()])
-
-    images = MultipleFileField('Upload Images', validators=[DataRequired()])
+    images = MultipleFileField('Upload Images')
     submit = SubmitField('Add Cafe')
 
 
@@ -63,11 +63,23 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Log Me In")
 
 
+def set_status():
+    if current_user.is_authenticated:
+        return current_user.status
+    else:
+        return "user"
+
+
 def admin_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if current_user.id != 1:
-            return abort(403)
+        print(current_user.is_authenticated)
+        if not current_user.is_authenticated:
+            return redirect(url_for('home'))
+        elif (current_user.status != "admin") and (current_user.status != "super-admin"):
+            # return abort(403)
+            print("Redirecting to Home")
+            return redirect(url_for('home'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -75,7 +87,7 @@ def admin_only(f):
 @login_manager.user_loader
 def load_user(user_id):
     # Implement logic to load a user object using the user_id
-    return User.query.get(user_id)  # Example assuming SQLAlchemy ORM
+    return User.query.get(user_id)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -109,20 +121,17 @@ def logout():
 def home():
     cafe_list = db.session.query(Cafe).all()
     leng = len(cafe_list)
-    user_stat = "user"
-    if current_user.is_authenticated:
-        if (current_user.id == 1):
-            user_stat = "admin"
+    user_stat = set_status()
     return render_template('index.html', cafes=cafe_list, leng=leng, path="/", user_stat=user_stat)
 
 
 @app.route('/insert-new-cafe', methods=["GET", "POST"])
 @admin_only
 def insert_new():
-    print("Inside Insert New")
+    # print("Inside Insert New")
     form = CifiForm()
     if form.validate_on_submit():
-        print("Entered Form Validation")
+        # print("Entered Form Validation")
 
         # uploaded_images = form.images.data
         # for image in uploaded_images:
@@ -142,17 +151,15 @@ def insert_new():
         db.session.commit()
         # print("New Cafe Inserted")
         return redirect(url_for('home'))
-    user_stat = "user"
-    if current_user.is_authenticated:
-        if (current_user.id == 1):
-            user_stat = "admin"
+    user_stat = set_status()
     return render_template('new-cafe.html', form=form, path='/insert-new-cafe', user_stat=user_stat)
 
 
 @app.route('/cafe/<id>')
 def cafe_details(id):
     cafe_to_show = Cafe.query.get(id)
-    return render_template('cafe-details.html', cafe=cafe_to_show)
+    user_stat = set_status()
+    return render_template('cafe-details.html', cafe=cafe_to_show, user_stat=user_stat)
 
 
 @app.route('/delete/<id>', methods=["POST"])

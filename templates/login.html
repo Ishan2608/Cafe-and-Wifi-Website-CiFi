@@ -23,9 +23,9 @@
             <form action="/login" method="POST">
                 {{ form.csrf_token }}
                 {{form.email.label(class="txt-s form-ele")}}
-                {{form.email(class="form-ele")}}
+                {{form.email(class="form-ele txt-s")}}
                 {{form.password.label(class="txt-s form-ele")}}
-                {{form.password(class="form-ele")}}
+                {{form.password(class="form-ele txt-s")}}
                 {{form.submit(class="btn txt-s")}}
              </form>
 

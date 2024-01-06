@@ -79,6 +79,10 @@ main.table-area{
     background-image: url("./images/new-cafe.png")
 }
 
+.cafe-details-area{
+    background-image: url("./images/cafe-details.png")
+}
+
 .dark-bg{
     color: white;
 }
@@ -120,13 +124,14 @@ main.table-area{
 nav{
     width: 100%;
     background-color: #200404;
-    padding: 10px 20px;
+    padding: 20px 30px;
 }
 
 nav > a{
     text-decoration: none;
     color: white;
     padding: 10px 5px;
+    margin-right: 10px;
 }
 
 /* Link Styles */
@@ -225,7 +230,8 @@ input:focus{
 
 /* INSERT NEW CAFE FORM */
 
-.content > form.new-cafe{
+.content > form.new-cafe,
+.content > .cafe-details{
     display: flex;
     justify-content: center;
     align-items: space-evenly;
@@ -234,7 +240,9 @@ input:focus{
 }
 
 .content > form > .left,
-.content > form > .right{
+.content > form > .right,
+.content > .cafe-details > .left,
+.content > .cafe-details > .right{
     width: 50%;
 }
 
@@ -242,7 +250,8 @@ input[type="time"]{
     width: auto;
 }
 
-.content > form > .right{
+.content > form > .right,
+.content > .cafe-details > right{
     position: relative;
 }
 
@@ -263,8 +272,11 @@ input[type="time"]{
     font-size: 200px;
 }
 
-.upload i:hover{
+i:hover{
     cursor: pointer;
-    color: black;
-    font-size: 204px;
+    color: #f9c7a1;
+}
+
+h1 > form{
+    display: inline;
 }
