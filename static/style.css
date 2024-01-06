@@ -60,27 +60,27 @@ i.fa-solid{
 /* BACKGROUND EFFECTS */
 
 header.home-page-header{
-    background-image: url('./images/home-header.png');
+    background-image: url('./images/bg_home_header.png');
 }
 
 main.table-area{
-    background-image: url("./images/table.png");
+    background-image: url("./images/bg_table.png");
 }
 
 .blog-area{
-    background-image: url("./images/blog-area.png");
+    background-image: url("./images/bg_blog_area.png");
 }
 
 .login-form-area{
-    background-image: url("./images/login-form.png")
+    background-image: url("./images/bg_login_form.png")
 }
 
 .new-cafe-form-area{
-    background-image: url("./images/new-cafe.png")
+    background-image: url("./images/bg_new_cafe.png")
 }
 
 .cafe-details-area{
-    background-image: url("./images/cafe-details.png")
+    background-image: url("./images/bg_cafe_details.png")
 }
 
 .dark-bg{
@@ -167,6 +167,8 @@ header > .content{
 h1{
     text-align: center;
     padding: 10px 10px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0, 0.4)
 }
 
 table{
@@ -186,6 +188,32 @@ th{
     background-color: #200404;
     font-weight: bold;
 }
+
+/* BLOG AREA */
+
+.blog-cards{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+    gap: 50px;
+    padding: 40px 0px;
+}
+
+.card{
+    background-color: white;
+    border-radius: 5px;
+    padding: 30px 30px;
+    text-align: justify;
+    width: 300px;
+    box-shadow: 6px 6px 12px rgb(0, 0, 0, 0.4);
+}
+.card > h3{
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
 
 /* LOGIN FORM STYLES */
 

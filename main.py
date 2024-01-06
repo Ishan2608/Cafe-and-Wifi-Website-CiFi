@@ -5,6 +5,8 @@ from wtforms.validators import DataRequired, URL
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
+from facts import facts
+import random
 
 rating_options = ['🤬', '😢😢', '😊😊😊', '😃😃😃😃', '🤩🤩🤩🤩🤩']
 
@@ -52,7 +54,7 @@ class CifiForm(FlaskForm):
     coffee_rating = SelectField('Coffee Rating', choices=rating_options, validators=[DataRequired()])
     wifi_rating = SelectField('Wifi Rating', choices=rating_options, validators=[DataRequired()])
     toilet_rating = SelectField('Toilet Rating', choices=rating_options, validators=[DataRequired()])
-    location = StringField('Location', validators=[DataRequired()])
+    location = StringField('Location', validators=[DataRequired(), URL()])
     images = MultipleFileField('Upload Images')
     submit = SubmitField('Add Cafe')
 
@@ -122,7 +124,10 @@ def home():
     cafe_list = db.session.query(Cafe).all()
     leng = len(cafe_list)
     user_stat = set_status()
-    return render_template('index.html', cafes=cafe_list, leng=leng, path="/", user_stat=user_stat)
+    fact_list = []
+    for i in range(3):
+        fact_list.append(random.choice(facts))
+    return render_template('index.html', cafes=cafe_list, leng=leng, path="/", user_stat=user_stat, fact_list=fact_list)
 
 
 @app.route('/insert-new-cafe', methods=["GET", "POST"])

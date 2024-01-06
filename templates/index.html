@@ -54,22 +54,14 @@
         <div class="bg-cover bg-white-shadow"></div>
         <div class="content">
             <h1 class="txt-l">Want to Know some Facts about Coffee?</h1>
-            <section class="blog-cards">
-                <article class="card">
-                    <h3 class="sm-title"></h3>
-                    <p></p>
-                </article>
-                
-                <article class="card">
-                    <h3 class="sm-title"></h3>
-                    <p></p>
-                </article>
-                
-                <article class="card">
-                    <h3 class="sm-title"></h3>
-                    <p></p>
-                </article>
-            </section>
+            <div class="blog-cards">
+                {% for fact in fact_list %}
+                    <div class="card">
+                        <h3 class="txt-s">{{fact.title}}</h3>
+                        <p class="txt-para">{{fact.para}}</p>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
