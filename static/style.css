@@ -292,6 +292,19 @@ input[type="time"]{
     text-align: center;
 }
 
+.content > .cafe-details > right{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.content > .cafe-details > .right img{
+    width: 300px;
+    height: auto;
+}
+
 #fileInput{
     display: none;
 }

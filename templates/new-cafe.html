@@ -12,7 +12,7 @@
         <div class="bg-cover bg-white-shadow"></div>
         <div class="content">
             <h1 class="txt-l">Insert New Cafe</h1>
-            <form action="/insert-new-cafe" method="POST" class="new-cafe">
+            <form action="/insert-new-cafe" method="POST" class="new-cafe" enctype="multipart/form-data">
                 {{ form.csrf_token }}
 
                 <div class="left">

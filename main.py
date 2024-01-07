@@ -1,6 +1,9 @@
-from flask import Flask, render_template, redirect, url_for, request, flash, abort
+from flask import Flask, render_template, redirect, url_for, request, flash, send_file, abort
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, TimeField, PasswordField, FileField, MultipleFileField
+from flask_wtf.file import FileField, FileAllowed
+from werkzeug.utils import secure_filename, send_from_directory
+import os
+from wtforms import StringField, SubmitField, SelectField, TimeField, PasswordField
 from wtforms.validators import DataRequired, URL
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
@@ -15,6 +18,7 @@ app.config['SECRET_KEY'] = 'my_secret_key_is_kept_in_my___'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cifi_cafes.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = './uploaded_image_files'  # Change this to your desired upload folder
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -29,6 +33,13 @@ class Cafe(db.Model):
     wifi_rating = db.Column(db.Integer, nullable=False)
     toilet_rating = db.Column(db.Integer, nullable=False)
     location = db.Column(db.String(250))
+
+
+# Image Model
+class Image(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    cafe_id = db.Column(db.Integer, db.ForeignKey('cafe.id'), nullable=False)
+    filename = db.Column(db.String(100), nullable=False)
 
 
 class User(UserMixin, db.Model):
@@ -55,7 +66,8 @@ class CifiForm(FlaskForm):
     wifi_rating = SelectField('Wifi Rating', choices=rating_options, validators=[DataRequired()])
     toilet_rating = SelectField('Toilet Rating', choices=rating_options, validators=[DataRequired()])
     location = StringField('Location', validators=[DataRequired(), URL()])
-    images = MultipleFileField('Upload Images')
+    images = FileField('Upload Images', validators=[DataRequired(), FileAllowed(['jpg', 'png'], 'Images only!')],
+                       render_kw={"multiple": True})
     submit = SubmitField('Add Cafe')
 
 
@@ -75,7 +87,7 @@ def set_status():
 def admin_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        print(current_user.is_authenticated)
+        # print(current_user.is_authenticated)
         if not current_user.is_authenticated:
             return redirect(url_for('home'))
         elif (current_user.status != "admin") and (current_user.status != "super-admin"):
@@ -133,17 +145,11 @@ def home():
 @app.route('/insert-new-cafe', methods=["GET", "POST"])
 @admin_only
 def insert_new():
-    # print("Inside Insert New")
     form = CifiForm()
     if form.validate_on_submit():
         # print("Entered Form Validation")
-
-        # uploaded_images = form.images.data
-        # for image in uploaded_images:
-        #     # Do something with each image (e.g., save to a folder, process, etc.)
-        #     # image.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image.filename)))
-        #     print(image.filename)  # Example: printing the filenames
-
+        # images = form.images.data
+        images = request.files.getlist('images')
         new_cafe = Cafe(
             cafe_name=form.cafe_name.data, opening_time=form.opening_time.data,
             closing_time=form.closing_time.data, coffee_rating=form.coffee_rating.data,
@@ -154,6 +160,15 @@ def insert_new():
         # print("Created Object Form Data")
         db.session.add(new_cafe)
         db.session.commit()
+
+        for image in images:
+            if image:
+                filename = secure_filename(image.filename)
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # Save image to a folder
+                new_image = Image(cafe_id=new_cafe.id, filename=filename)
+                db.session.add(new_image)
+        db.session.commit()
+
         # print("New Cafe Inserted")
         return redirect(url_for('home'))
     user_stat = set_status()
@@ -163,8 +178,17 @@ def insert_new():
 @app.route('/cafe/<id>')
 def cafe_details(id):
     cafe_to_show = Cafe.query.get(id)
+    cafe_images = Image.query.filter_by(cafe_id=cafe_to_show.id).all()
+    image_urls = [url_for('uploaded_images', filename=image.filename) for image in cafe_images]
     user_stat = set_status()
-    return render_template('cafe-details.html', cafe=cafe_to_show, user_stat=user_stat)
+
+    return render_template('cafe-details.html', cafe=cafe_to_show, user_stat=user_stat, image_urls=image_urls)
+
+
+@app.route('/uploads/<filename>')
+def uploaded_images(filename):
+    # return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
 
 @app.route('/delete/<id>', methods=["POST"])

@@ -56,7 +56,11 @@
                     </p>
                 </div>
                 <div class="right">
-
+                    <div>
+                        {% for image_url in image_urls %}
+                            <img src="{{ image_url }}" alt="Cafe Image">
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
