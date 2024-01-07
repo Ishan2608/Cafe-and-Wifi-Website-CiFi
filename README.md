@@ -1,5 +1,7 @@
 #Cifi: Your Brewtiful Guide to Cafe Bliss
-Cifi is your one-stop shop for discovering the perfect cup of coffee and the cafe to enjoy it in. Built with Flask, Cifi is a web application that lets you explore cafes, rate their coffee, wifi, and toilets, and discover hidden gems based on trusted reviews.
+Cifi is your one-stop shop for discovering the perfect cup of coffee and the cafe to enjoy it in. Built with Flask, Cifi is a web application that lets you explore cafes, rate their coffee, wifi, and toilets, and discover hidden gems based on trusted reviews. <br>
+![Code Output](./code_output.gif)
+
 
 ##What makes Cifi different?
 
