@@ -77,6 +77,12 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Log Me In")
 
 
+class JoinJuryForm(FlaskForm):
+    email = StringField('Email')
+    password = PasswordField('Password')
+    submit = SubmitField('Join the Jury')
+
+
 def set_status():
     if current_user.is_authenticated:
         return current_user.status
@@ -199,6 +205,20 @@ def delete_cafe(id):
         db.session.delete(cafe_to_del)
         db.session.commit()
     return redirect('/')
+
+
+@app.route('/joinjury', methods=['GET','POST'])
+def index():
+    form = JoinJuryForm()
+    if form.validate_on_submit():
+        # Process the form data (You can save to a database, authenticate, etc.)
+        email = form.email.data
+        password = form.password.data
+        # Add your logic here
+
+        return f'Success! Email: {email}, Password: {password}'
+
+    return render_template('joinjury.html', form=form)
 
 
 if __name__ == '__main__':
