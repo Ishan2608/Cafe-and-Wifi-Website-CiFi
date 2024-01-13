@@ -3,13 +3,14 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from werkzeug.utils import secure_filename, send_from_directory
 import os
-from wtforms import StringField, SubmitField, SelectField, TimeField, PasswordField
+from wtforms import StringField, SubmitField, SelectField, TimeField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired, URL
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from facts import facts
 import random
+import csv
 
 rating_options = ['🤬', '😢😢', '😊😊😊', '😃😃😃😃', '🤩🤩🤩🤩🤩']
 
@@ -80,6 +81,7 @@ class LoginForm(FlaskForm):
 class JoinJuryForm(FlaskForm):
     email = StringField('Email')
     password = PasswordField('Password')
+    reason = TextAreaField('Why should we HIRE YOU?', render_kw={'placeholder': 'Enter your reason here'})
     submit = SubmitField('Join the Jury')
 
 
@@ -215,10 +217,24 @@ def index():
         email = form.email.data
         password = form.password.data
         # Add your logic here
-
-        return f'Success! Email: {email}, Password: {password}'
+        save_to_csv(email, password)
+        print(f'Success! Email: {email}, Password: {password}')
+        return redirect(url_for('home'))
 
     return render_template('joinjury.html', form=form)
+
+
+def save_to_csv(email, password):
+    with open('user_data.csv', 'a', newline='') as csvfile:
+        fieldnames = ['Email', 'Password']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        # Check if the file is empty, if yes, write the header
+        if csvfile.tell() == 0:
+            writer.writeheader()
+
+        # Write the data
+        writer.writerow({'Email': email, 'Password': password})
 
 
 if __name__ == '__main__':

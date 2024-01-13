@@ -72,15 +72,19 @@ main.table-area{
 }
 
 .login-form-area{
-    background-image: url("./images/bg_login_form.png")
+    background-image: url("./images/bg_login_form.png");
 }
 
 .new-cafe-form-area{
-    background-image: url("./images/bg_new_cafe.png")
+    background-image: url("./images/bg_new_cafe.png");
 }
 
 .cafe-details-area{
-    background-image: url("./images/bg_cafe_details.png")
+    background-image: url("./images/bg_cafe_details.png");
+}
+
+.join-jury-area{
+    background-image: url("./images/joinjury-bg.jpg");
 }
 
 .dark-bg{
@@ -320,4 +324,26 @@ i:hover{
 
 h1 > form{
     display: inline;
+}
+
+/* JOIN THE JURY FORM */
+
+.joinjury-form-box{
+    background-color: #f9c7a1;
+    border-radius: 4px;
+    width: 600px;
+}
+
+textarea{
+    width: 100%;
+    border: 0;
+    outline: none;
+    height: 400px;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+textarea:focus{
+    outline: none;
+    border: 2px solid #200404;
 }

@@ -10,15 +10,17 @@
 <body>
     {% include 'nav.html' %}
     <main class="cover-screen join-jury-area">
-        <h1 class="login-h txt-l">Join the Jury</h1>
         <div class="bg-cover bg-white-shadow"></div>
-        <div class="content login-form-box">
+        <div class="content joinjury-form-box">
             <form method="POST" action="/joinjury">
+                <h1 class="txt-l">Join the Jury</h1>
                 {{ form.csrf_token }}
                 {{ form.email.label(class="txt-s form-ele") }}
                 {{ form.email(class="form-ele txt-s") }}
                 {{ form.password.label(class="txt-s form-ele") }}
                 {{ form.password(class="txt-s form-ele") }}
+                {{ form.reason.label(class="txt-s form-ele") }}
+                {{ form.reason(class="txt-s form-ele") }}
                 {{ form.submit(class="btn txt-s") }}
             </form>
         </div>
