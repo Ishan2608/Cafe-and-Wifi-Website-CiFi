@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, flash, send_file, abort
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from werkzeug.utils import secure_filename, send_from_directory
+from werkzeug.utils import secure_filename
 import os
 from wtforms import StringField, SubmitField, SelectField, TimeField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired, URL
@@ -10,7 +10,11 @@ from functools import wraps
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from facts import facts
 import random
+
+# imports to save data to sheets
 import csv
+import requests
+
 
 rating_options = ['🤬', '😢😢', '😊😊😊', '😃😃😃😃', '🤩🤩🤩🤩🤩']
 
@@ -24,6 +28,8 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+# Specify your Sheety API endpoint URL
+sheety_api_url = os.environ.get('SHEETY_API_URL')
 
 class Cafe(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True)
@@ -59,6 +65,9 @@ db.session.add(admin)
 db.session.commit()
 
 
+# DEFINE WTF FORMS
+
+
 class CifiForm(FlaskForm):
     cafe_name = StringField("Cafe Name", validators=[DataRequired()])
     opening_time = TimeField('Opening Time')
@@ -85,6 +94,9 @@ class JoinJuryForm(FlaskForm):
     submit = SubmitField('Join the Jury')
 
 
+# UTILITY FUNCTIONS
+
+
 def set_status():
     if current_user.is_authenticated:
         return current_user.status
@@ -106,10 +118,26 @@ def admin_only(f):
     return decorated_function
 
 
+def save_to_csv(email, password, reason):
+    with open('join_jury_req.csv', 'a', newline='') as csvfile:
+        fieldnames = ['Email', 'Password', 'Reason']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        # Check if the file is empty, if yes, write the header
+        if csvfile.tell() == 0:
+            writer.writeheader()
+
+        # Write the data
+        writer.writerow({'Email': email, 'Password': password, 'Reason': reason})
+
+
 @login_manager.user_loader
 def load_user(user_id):
     # Implement logic to load a user object using the user_id
     return User.query.get(user_id)
+
+
+# REQUEST LISTENERS
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -217,25 +245,33 @@ def index():
         email = form.email.data
         password = form.password.data
         reason = form.reason.data
-        # Add your logic here
+
+        # Add data to a local CSV File
         save_to_csv(email, password, reason)
-        print(f'Success! Email: {email},\nPassword: {password},\nReason: {reason}')
+        print('Successfully Added to Local CSV File!')
+
+        # Add data to Google Sheet
+        # Prepare data to be sent to Sheety API
+        data = {
+            "sheet1": {
+                "email": email,
+                "password": password,
+                "reason": reason
+            }
+        }
+        # Make a POST request to Sheety API endpoint
+        response = requests.post(sheety_api_url, json=data)
+
+        # Check the response status
+        if response.status_code == 200:
+            print("Data successfully saved to Google Sheets.")
+        else:
+            print(f"Error: {response.status_code}, {response.text}")
+
+        # Reroute to Home Page after success
         return redirect(url_for('home'))
 
     return render_template('joinjury.html', form=form)
-
-
-def save_to_csv(email, password, reason):
-    with open('user_data.csv', 'a', newline='') as csvfile:
-        fieldnames = ['Email', 'Password', 'Reason']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-        # Check if the file is empty, if yes, write the header
-        if csvfile.tell() == 0:
-            writer.writeheader()
-
-        # Write the data
-        writer.writerow({'Email': email, 'Password': password, 'Reason': reason})
 
 
 if __name__ == '__main__':
