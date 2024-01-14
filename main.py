@@ -216,17 +216,18 @@ def index():
         # Process the form data (You can save to a database, authenticate, etc.)
         email = form.email.data
         password = form.password.data
+        reason = form.reason.data
         # Add your logic here
-        save_to_csv(email, password)
-        print(f'Success! Email: {email}, Password: {password}')
+        save_to_csv(email, password, reason)
+        print(f'Success! Email: {email},\nPassword: {password},\nReason: {reason}')
         return redirect(url_for('home'))
 
     return render_template('joinjury.html', form=form)
 
 
-def save_to_csv(email, password):
+def save_to_csv(email, password, reason):
     with open('user_data.csv', 'a', newline='') as csvfile:
-        fieldnames = ['Email', 'Password']
+        fieldnames = ['Email', 'Password', 'Reason']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         # Check if the file is empty, if yes, write the header
@@ -234,7 +235,7 @@ def save_to_csv(email, password):
             writer.writeheader()
 
         # Write the data
-        writer.writerow({'Email': email, 'Password': password})
+        writer.writerow({'Email': email, 'Password': password, 'Reason': reason})
 
 
 if __name__ == '__main__':
